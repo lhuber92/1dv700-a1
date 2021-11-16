@@ -32,7 +32,6 @@ function App() {
   }
 
   const handleSelectChange = function (event) {
-    console.log(event.target.value)
     setAlgorithm(event.target.value)
   }
 
@@ -41,7 +40,19 @@ function App() {
   }
 
   const submit = function () {
-    console.log('pressed')
+    if (algorithm === 'caesarCipher') {
+      caesarCipherEncryption()
+    } else {
+      leoCipherEncryption()
+    }
+  }
+
+  const leoCipherEncryption = function () {
+    console.log('leo')
+  }
+
+  const caesarCipherEncryption = function () {
+    console.log('caesar')
   }
 
   return (
