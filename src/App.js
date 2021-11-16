@@ -11,6 +11,7 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
+import * as fs from 'fs/promises';
 
 function App() {
   const [input, setInput] = useState(false)
@@ -39,12 +40,15 @@ function App() {
     console.log(event.target.value)
   }
 
-  const submit = function () {
+  const submit = async function () {
     if (algorithm === 'caesarCipher') {
       caesarCipherEncryption()
     } else {
       leoCipherEncryption()
     }
+    const file = await fs.readFile('plainText.txt', 'utf8');
+    console.log(file)
+    await fs.writeFile('processed.txt', 'test');
   }
 
   const leoCipherEncryption = function () {
