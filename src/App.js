@@ -1,16 +1,21 @@
 import './App.css';
 import React, { useState } from "react"
 import "@fontsource/plus-jakarta-sans"; // Defaults to weight 400.
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Switch from '@material-ui/core/Switch';
-import SubmitIcon from '@material-ui/icons/ArrowForward';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Switch from '@mui/material/Switch';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import InputLabel from '@mui/material/InputLabel';
+import FormControl from '@mui/material/FormControl';
 
 function App() {
   const [input, setInput] = useState(false)
   const [checked, setChecked] = useState(false)
+  const [algorithm, setAlgorithm] = React.useState('caesarCipher');
 
   const handleInput = function (inputString) {
     setInput(inputString)
@@ -25,6 +30,11 @@ function App() {
     }
   }
 
+  const handleSelectChange = function (event) {
+    console.log(event.target.value)
+    setAlgorithm(event.target.value)
+  }
+
   const submit = function () {
     console.log('pressed')
   }
@@ -36,7 +46,24 @@ function App() {
           Boilerplate
         </header>
         <form noValidate autoComplete="off">
-          <TextField onChange={(event) => handleInput(event.target.value)} label="Enter your name" inputProps={{ maxLength: 10 }} />
+          <div className="inputField">
+            <TextField onChange={(event) => handleInput(event.target.value)} label="Enter your name" inputProps={{ maxLength: 10 }} />
+          </div>
+          <div className="inputField">
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">Algorithm</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={algorithm}
+                label="Algorithm"
+                onChange={handleSelectChange}
+              >
+                <MenuItem value={'caesarCipher'}>Caesar Cipher</MenuItem>
+                <MenuItem value={'leoCipher'}>Leo Cipher</MenuItem>
+              </Select>
+            </FormControl>
+          </div>
         </form>
         <FormGroup row>
           <FormControlLabel
@@ -60,7 +87,7 @@ function App() {
               variant="contained"
               color="primary"
               size="large"
-              startIcon={<SubmitIcon />}
+              startIcon={<ArrowForwardIcon />}
               onClick={() => { submit() }}
             >
               Submit

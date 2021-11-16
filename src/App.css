@@ -37,5 +37,13 @@ header {
 
 .MuiFormGroup-row {
   justify-content: center;
-  margin-top: 50px;
+  margin-top: 20px;
+}
+
+.inputField {
+  margin-bottom: 20px;
+}
+
+.inputField:last-child {
+  margin-bottom: 0px;
 }
