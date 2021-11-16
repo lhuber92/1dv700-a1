@@ -127,18 +127,17 @@ function App() {
         </FormGroup>
         {input && (
           <>
-            <div>
-              <p>{input}</p>
+            <div className="startButton">
+              <Button
+                variant="contained"
+                color="primary"
+                size="large"
+                startIcon={<ArrowForwardIcon />}
+                onClick={() => { submit() }}
+              >
+                Start {switchLabel}
+              </Button>
             </div>
-            <Button
-              variant="contained"
-              color="primary"
-              size="large"
-              startIcon={<ArrowForwardIcon />}
-              onClick={() => { submit() }}
-            >
-              Start {switchLabel}
-            </Button>
             {downloadLink && (downloadLink)}
           </>
         )}
