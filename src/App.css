@@ -51,3 +51,8 @@ header {
 .MuiFormControl-root {
   width: 100%;
 }
+
+.downloadLink, .downloadLink:hover {
+  text-decoration: none;
+  margin-top: 20px;
+}

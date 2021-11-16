@@ -1,10 +1,11 @@
 import './App.css';
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import "@fontsource/plus-jakarta-sans"; // Defaults to weight 400.
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import DownloadIcon from '@mui/icons-material/Download';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Select from '@mui/material/Select';
@@ -17,6 +18,7 @@ function App() {
   const [checked, setChecked] = useState(false)
   const [algorithm, setAlgorithm] = React.useState('caesarCipher');
   const [switchLabel, setSwitchLabel] = React.useState('Encryption')
+  const [downloadLink, setDownloadLink] = React.useState(false)
 
   const handleInput = function (inputString) {
     setInput(inputString)
@@ -45,7 +47,22 @@ function App() {
     } else {
       leoCipherEncryption()
     }
-    
+
+    console.log(input)
+    const data = new Blob([input], { type: 'text/plain' });
+    const fileUrl = window.URL.createObjectURL(data);
+    console.log(data)
+    setDownloadLink(
+        <a className="downloadLink" download href={fileUrl}>
+          <Button
+            className="downloadButton"
+            variant="contained"
+            color="secondary"
+            size="large"
+            startIcon={<DownloadIcon />}
+          >Download file</Button>
+        </a>
+    )
   }
 
   const leoCipherEncryption = function () {
@@ -55,6 +72,12 @@ function App() {
   const caesarCipherEncryption = function () {
     console.log('caesar')
   }
+
+  useEffect(() => {
+    if (!input) {
+      setDownloadLink(false)
+    }
+  }, [input])
 
   return (
     <div className="App">
@@ -114,10 +137,12 @@ function App() {
               startIcon={<ArrowForwardIcon />}
               onClick={() => { submit() }}
             >
-              Submit
+              Start {switchLabel}
             </Button>
+            {downloadLink && (downloadLink)}
           </>
         )}
+        
       </main>
     </div>
   );
