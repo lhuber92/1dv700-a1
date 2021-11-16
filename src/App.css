@@ -47,3 +47,7 @@ header {
 .inputField:last-child {
   margin-bottom: 0px;
 }
+
+.MuiFormControl-root {
+  width: 100%;
+}

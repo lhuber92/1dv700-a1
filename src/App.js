@@ -16,6 +16,7 @@ function App() {
   const [input, setInput] = useState(false)
   const [checked, setChecked] = useState(false)
   const [algorithm, setAlgorithm] = React.useState('caesarCipher');
+  const [switchLabel, setSwitchLabel] = React.useState('Encryption')
 
   const handleInput = function (inputString) {
     setInput(inputString)
@@ -24,15 +25,19 @@ function App() {
   const handleSwitchChange = function (event) {
     setChecked(event.target.checked)
     if (event.target.checked) {
-      console.log('1')
+      setSwitchLabel('Decryption')
     } else {
-      console.log('2')
+      setSwitchLabel('Encryption')
     }
   }
 
   const handleSelectChange = function (event) {
     console.log(event.target.value)
     setAlgorithm(event.target.value)
+  }
+
+  const handleFileChange = function (event) {
+    console.log(event.target.value)
   }
 
   const submit = function () {
@@ -43,11 +48,11 @@ function App() {
     <div className="App">
       <main>
         <header>
-          Boilerplate
+          cryptoFriend
         </header>
         <form noValidate autoComplete="off">
           <div className="inputField">
-            <TextField onChange={(event) => handleInput(event.target.value)} label="Enter your name" inputProps={{ maxLength: 10 }} />
+            <TextField multiline onChange={(event) => handleInput(event.target.value)} label="Paste your secret key" />
           </div>
           <div className="inputField">
             <FormControl fullWidth>
@@ -63,6 +68,13 @@ function App() {
                 <MenuItem value={'leoCipher'}>Leo Cipher</MenuItem>
               </Select>
             </FormControl>
+            <div className="inputField">
+            <input 
+              type="file" 
+              onChange={handleFileChange}
+              accept=".txt"
+            />
+            </div>
           </div>
         </form>
         <FormGroup row>
@@ -75,7 +87,7 @@ function App() {
                 color="primary"
               />
             }
-            label="Switch"
+            label={switchLabel}
           />
         </FormGroup>
         {input && (
