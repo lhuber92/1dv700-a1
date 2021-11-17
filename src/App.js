@@ -41,7 +41,6 @@ function App() {
   // Inspiration for file-reading found here:
   // https://stackoverflow.com/questions/14446447/how-to-read-a-local-text-file
   const handleFileChange = function (file) {
-    console.log(file)
     const reader = new FileReader();
     reader.onload = function(){
       const text = reader.result;
@@ -54,13 +53,10 @@ function App() {
     if (algorithm === 'caesarCipher') {
       caesarCipherEncryption()
     } else {
-      leoCipherEncryption()
+      routeCipherEncryption()
     }
-
-    console.log(input)
     const data = new Blob([input], { type: 'text/plain' });
     const fileUrl = window.URL.createObjectURL(data);
-    console.log(data)
     setDownloadLink(
         <a className="downloadLink" download href={fileUrl}>
           <Button
@@ -74,7 +70,8 @@ function App() {
     )
   }
 
-  const leoCipherEncryption = function () {
+  const routeCipherEncryption = function () {
+    const plainText = "WE ARE DISCOVERED FLEE AT ONCE"
     console.log('leo')
   }
 
@@ -108,8 +105,8 @@ function App() {
                 label="Algorithm"
                 onChange={handleSelectChange}
               >
-                <MenuItem value={'caesarCipher'}>Caesar Cipher</MenuItem>
-                <MenuItem value={'leoCipher'}>Leo Cipher</MenuItem>
+                <MenuItem value={'caesarCipher'}>Caesar Cipher (substitution)</MenuItem>
+                <MenuItem value={'leoCipher'}>Leo Cipher (transportation)</MenuItem>
               </Select>
             </FormControl>
             <div className="inputField">
