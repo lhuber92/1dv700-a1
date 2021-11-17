@@ -35,6 +35,7 @@ function App() {
   }
 
   const handleSelectChange = function (event) {
+    setDownloadLink(false)
     setAlgorithm(event.target.value)
   }
 
@@ -53,7 +54,7 @@ function App() {
     if (algorithm === 'caesarCipher') {
       caesarCipherEncryption()
     } else {
-      routeCipherEncryption()
+      leoCipherEncryption()
     }
     const data = new Blob([input], { type: 'text/plain' });
     const fileUrl = window.URL.createObjectURL(data);
@@ -70,9 +71,54 @@ function App() {
     )
   }
 
-  const routeCipherEncryption = function () {
+  const leoCipherEncryption = function () {
+    const cipherAlphabet = createCipherAlphabet("4x18x22x23x15x13x24x10x5x7x21x26x11x1x17x2x3x6x8x9x12x14x16x19x20x25x")
     const plainText = "WE ARE DISCOVERED FLEE AT ONCE"
-    console.log('leo')
+    let cypherText = ""
+  
+    for (let i = 0; i < plainText.length; i++) {
+      cypherText = cypherText + encryptCharacter(plainText[i], cipherAlphabet) 
+    }
+
+    console.log(cypherText)
+  }
+
+  const createCipherAlphabet = function (key) {
+    const cipherAlphabet = key.split("x")
+    for (let i = 0; i < cipherAlphabet.length; i++) {
+      cipherAlphabet[i] = Number(cipherAlphabet[i])
+    }
+    return cipherAlphabet
+  }
+
+  const encryptCharacter = function (character, cipherAlphabet) {
+    if (character === "a" || character === "A") { return cipherAlphabet[0] }
+    else if (character === "b" || character === "B") { return cipherAlphabet[1] }
+    else if (character === "c" || character === "C") { return cipherAlphabet[2] }
+    else if (character === "d" || character === "D") { return cipherAlphabet[3] }
+    else if (character === "e" || character === "E") { return cipherAlphabet[4] }
+    else if (character === "f" || character === "F") { return cipherAlphabet[5] }
+    else if (character === "g" || character === "G") { return cipherAlphabet[6] }
+    else if (character === "h" || character === "H") { return cipherAlphabet[7] }
+    else if (character === "i" || character === "I") { return cipherAlphabet[8] }
+    else if (character === "j" || character === "J") { return cipherAlphabet[9] }
+    else if (character === "k" || character === "K") { return cipherAlphabet[10] }
+    else if (character === "l" || character === "L") { return cipherAlphabet[11] }
+    else if (character === "m" || character === "M") { return cipherAlphabet[12] }
+    else if (character === "n" || character === "N") { return cipherAlphabet[13] }
+    else if (character === "o" || character === "O") { return cipherAlphabet[14] }
+    else if (character === "p" || character === "P") { return cipherAlphabet[15] }
+    else if (character === "q" || character === "Q") { return cipherAlphabet[16] }
+    else if (character === "r" || character === "R") { return cipherAlphabet[17] }
+    else if (character === "s" || character === "S") { return cipherAlphabet[18] }
+    else if (character === "t" || character === "T") { return cipherAlphabet[19] }
+    else if (character === "u" || character === "u") { return cipherAlphabet[20] }
+    else if (character === "v" || character === "V") { return cipherAlphabet[21] }
+    else if (character === "w" || character === "W") { return cipherAlphabet[22] }
+    else if (character === "x" || character === "X") { return cipherAlphabet[23] }
+    else if (character === "y" || character === "Y") { return cipherAlphabet[24] }
+    else if (character === "z" || character === "Z") { return cipherAlphabet[25] }
+    else { return character}
   }
 
   const caesarCipherEncryption = function () {
