@@ -16,9 +16,10 @@ import FormControl from '@mui/material/FormControl';
 function App() {
   const [input, setInput] = useState(false)
   const [checked, setChecked] = useState(false)
-  const [algorithm, setAlgorithm] = React.useState('caesarCipher');
+  const [algorithm, setAlgorithm] = React.useState('caesarCipher')
   const [switchLabel, setSwitchLabel] = React.useState('Encryption')
   const [downloadLink, setDownloadLink] = React.useState(false)
+  const [textToProcess, setTextToProcess] = React.useState(false)
 
   const handleInput = function (inputString) {
     setInput(inputString)
@@ -37,8 +38,16 @@ function App() {
     setAlgorithm(event.target.value)
   }
 
-  const handleFileChange = function (event) {
-    console.log(event.target.value)
+  // Inspiration for file-reading found here:
+  // https://stackoverflow.com/questions/14446447/how-to-read-a-local-text-file
+  const handleFileChange = function (file) {
+    console.log(file)
+    const reader = new FileReader();
+    reader.onload = function(){
+      const text = reader.result;
+      setTextToProcess(text);
+    };
+    reader.readAsText(file);
   }
 
   const submit = async function () {
@@ -106,7 +115,7 @@ function App() {
             <div className="inputField">
             <input 
               type="file" 
-              onChange={handleFileChange}
+              onChange={(event) => handleFileChange(event.target.files[0])}
               accept=".txt"
             />
             </div>
