@@ -15,7 +15,7 @@ import FormControl from '@mui/material/FormControl';
 
 function App() {
   const [input, setInput] = useState(false)
-  const [key, setKey] = useState("4x18x22x23x15x13x24x10x5x7x21x26x11x1x17x2x3x6x8x9x12x14x16x19x20x25x")
+  const [key, setKey] = useState("4x18x22x23x15x13x24x10x5x7x21x26x11x1x17x2x3x6x8x9x12x14x16x19x20x25x") // W = 16
   const [checked, setChecked] = useState(false)
   const [algorithm, setAlgorithm] = React.useState('caesarCipher')
   const [switchLabel, setSwitchLabel] = React.useState('Encryption')
@@ -49,7 +49,7 @@ function App() {
       const text = reader.result;
       setTextToProcess(text);
     };
-    reader.readAsText(file);
+    if (file) {reader.readAsText(file);}
   }
 
   const submit = async function () {
@@ -74,36 +74,51 @@ function App() {
     )
   }
 
-  const leoCipherEncryption = function (pairedAlphabet) {
-    let cypherText = ""
-    for (let i = 0; i < textToProcess.length; i++) {
-      cypherText = cypherText + encryptCharacter(textToProcess[i], pairedAlphabet) 
-    }
-    console.log(cypherText)
-  }
-
   const createCipherAlphabet = function (key) {
     const keyFragments = key.split("x")
     keyFragments.pop() // Remove last element ("")
     const pairedAlphabet = []
-    console.log(keyFragments)
-    console.log(alphabet)
     for (let i = 0; i < keyFragments.length; i++) {
-      pairedAlphabet.push({ plaintextCharacter: alphabet[i], cipherCharacter: Number(keyFragments[i]) })
+      console.log(`Pushed ${alphabet[i]} with ${Number(keyFragments[i])}`)
+      pairedAlphabet.push({ plainCharacter: alphabet[i], cipherCharacter: Number(keyFragments[i]) })
     }
     return pairedAlphabet
   }
 
-  const encryptCharacter = function (character, pairedAlphabet) {
-    const pairedPlaintextCipher = pairedAlphabet.find(element => element.plaintextCharacter.toUpperCase() === character || element.plaintextCharacter.toLowerCase() === character)
-    if (pairedPlaintextCipher) {
-      return pairedPlaintextCipher.cipherCharacter
+  const leoCipherEncryption = function (pairedAlphabet) {
+    let cypherText = ""
+    for (let i = 0; i < textToProcess.length; i++) {
+      cypherText = cypherText + leoCipherEncryptCharacter(textToProcess[i], pairedAlphabet) 
+    }
+    console.log(cypherText)
+  }
+
+  const leoCipherEncryptCharacter = function (plainCharacter, pairedAlphabet) {
+    const plainCypherPair = pairedAlphabet.find(element => element.plainCharacter.toUpperCase() === plainCharacter || element.plainCharacter.toLowerCase() === plainCharacter)
+    if (plainCypherPair) {
+      console.log(plainCypherPair)
+      return plainCypherPair.cipherCharacter
     } else {
-      return character
+      return plainCharacter
     }
   }
 
-  const leoCipherDecryption = function () {
+  const leoCipherDecryption = function (pairedAlphabet) {
+    let plainText = ""
+    for (let i = 0; i < textToProcess.length; i++) {
+      plainText = plainText + leoCipherDecryptCharacter(textToProcess[i], pairedAlphabet) 
+    }
+    console.log(plainText)
+  }
+
+  const leoCipherDecryptCharacter = function (cypherCharacter, pairedAlphabet) {
+    console.log(pairedAlphabet)
+    const plainCypherPair = pairedAlphabet.find(element => element.cipherCharacter === Number(cypherCharacter))
+    if (plainCypherPair) {
+      return plainCypherPair.plainCharacter
+    } else {
+      return cypherCharacter
+    }
   }
 
   const caesarCipherEncryption = function () {
