@@ -27,11 +27,57 @@ function App() {
   const [cryptoOutput, setCryptoOutput] = React.useState(false)
   const [hashOutput, setHashOutput] = React.useState(false)
   const alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
+  const unsignedHashArray = (() => {
+    const tempArray = []
+    for (let i = 0; i <= 255; i++) {
+      tempArray.push(i)
+    }
+
+    // Shuffle inspiration found here:
+    // https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+    let currentIndex = tempArray.length
+    let randomIndex
+  
+    // While there remain elements to shuffle...
+    while (currentIndex !== 0) {
+      // Pick a remaining element...
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex--;
+  
+      // And swap it with the current element.
+      [tempArray[currentIndex], tempArray[randomIndex]] = [tempArray[randomIndex], tempArray[currentIndex]];
+    }
+
+    return tempArray
+  })()
+
+  const handleHashInput = function (inputString) {
+    console.log(unsignedHashArray)
+    console.log(inputString)
+  }
 
   const handleCryptoInput = function (inputString) {
     setDownloadLink(false)
     setInput(inputString)
   }
+  
+  // More checking could be for a live implementation but it would also give more information on the key format for hackers.
+  const validateInput = function (inputString) {
+    if (algorithm === 'caesarCipher') {
+      if (!isNumber(Number(inputString)) || Number(inputString > alphabet.length) || inputString < 0) {
+        alert('Only non-negative numbers accepted that are not higher than the length of the alphabet.')
+        return false
+      }
+    } else if (inputString.length !== 69) {
+      alert('Key needs to be 69 character long.')
+      return false
+    }
+    return true
+  }
+  
+  // Inspiration found here
+  // https://stackoverflow.com/questions/1303646/check-whether-variable-is-number-or-string-in-javascript
+  const isNumber = function (number) { return !isNaN(parseFloat(number)) && !isNaN(number - 0) }
 
   const handleSwitchChange = function (event) {
     setDownloadLink(false)
@@ -61,28 +107,30 @@ function App() {
   }
 
   const submit = async function () {
-    let result
-    if (algorithm === 'caesarCipher') {
-      const pairedAlphabet = createCaesarCipherAlphabet(key)
-      switchLabel === 'Encryption' ? result = encryptText(pairedAlphabet) : result = caesarCipherDecryption(pairedAlphabet)
-    } else {
-      const pairedAlphabet = createLeoCipherAlphabet(key)
-      switchLabel === 'Encryption' ? result = encryptText(pairedAlphabet) : result = leoCipherDecryption(pairedAlphabet)
+    if (validateInput(input)) {
+      let result
+      if (algorithm === 'caesarCipher') {
+        const pairedAlphabet = createCaesarCipherAlphabet(key)
+        switchLabel === 'Encryption' ? result = encryptText(pairedAlphabet) : result = caesarCipherDecryption(pairedAlphabet)
+      } else {
+        const pairedAlphabet = createLeoCipherAlphabet(key)
+        switchLabel === 'Encryption' ? result = encryptText(pairedAlphabet) : result = leoCipherDecryption(pairedAlphabet)
+      }
+      const data = new Blob([result], { type: 'text/plain' });
+      const fileUrl = window.URL.createObjectURL(data);
+      setDownloadLink(
+          <a className="downloadLink" download href={fileUrl}>
+            <Button
+              className="downloadButton"
+              variant="contained"
+              color="secondary"
+              size="large"
+              startIcon={<DownloadIcon />}
+            >Download file</Button>
+          </a>
+      )
+      setCryptoOutput(result)
     }
-    const data = new Blob([result], { type: 'text/plain' });
-    const fileUrl = window.URL.createObjectURL(data);
-    setDownloadLink(
-        <a className="downloadLink" download href={fileUrl}>
-          <Button
-            className="downloadButton"
-            variant="contained"
-            color="secondary"
-            size="large"
-            startIcon={<DownloadIcon />}
-          >Download file</Button>
-        </a>
-    )
-    setCryptoOutput(result)
   }
 
   const encryptText = function (pairedAlphabet) {
@@ -187,7 +235,7 @@ function App() {
           <Chip label="HASHING" />
         </Divider>
         <div className="inputField">
-          <TextField multiline onChange={(event) => handleCryptoInput(event.target.value)} label="Paste text to be hashed" />
+          <TextField multiline onChange={(event) => handleHashInput(event.target.value)} label="Paste text to be hashed" />
         </div>
         <div className="outputArea">{hashOutput}</div>
         <div className="cryptoDivider">
