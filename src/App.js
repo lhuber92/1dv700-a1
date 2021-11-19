@@ -17,6 +17,7 @@ import Chip from '@mui/material/Chip';
 
 function App() {
   const [input, setInput] = useState(false)
+  const [hashInput, setHashInput] = useState(false)
   // const [key, setKey] = useState("4x18x22x23x15x13x24x10x5x7x21x26x11x1x17x2x3x6x8x9x12x14x16x19x20x25x") // W = 16
   const [key, setKey] = useState(7) // W = 16
   const [checked, setChecked] = useState(false)
@@ -27,33 +28,18 @@ function App() {
   const [cryptoOutput, setCryptoOutput] = React.useState(false)
   const [hashOutput, setHashOutput] = React.useState(false)
   const alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
-  const unsignedHashArray = (() => {
-    const tempArray = []
-    for (let i = 0; i <= 255; i++) {
-      tempArray.push(i)
-    }
+  const [unsignedHashArray, setUnsignedHashArray] = React.useState(false)
 
-    // Shuffle inspiration found here:
-    // https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
-    let currentIndex = tempArray.length
-    let randomIndex
-  
-    // While there remain elements to shuffle...
-    while (currentIndex !== 0) {
-      // Pick a remaining element...
-      randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex--;
-  
-      // And swap it with the current element.
-      [tempArray[currentIndex], tempArray[randomIndex]] = [tempArray[randomIndex], tempArray[currentIndex]];
-    }
-
-    return tempArray
-  })()
-
-  const handleHashInput = function (inputString) {
+  const hashSubmit = async function (hashInput) {
+    console.log(hashInput)
     console.log(unsignedHashArray)
-    console.log(inputString)
+    setHashOutput(generateHash(hashInput))
+  }
+
+  const generateHash = function (message) {
+    return message.split('').reduce((hash, c) => {
+      return unsignedHashArray[(hash + c.charCodeAt(0)) % (unsignedHashArray.length - 1)]
+    }, message.length % (unsignedHashArray.length - 1))
   }
 
   const handleCryptoInput = function (inputString) {
@@ -106,7 +92,7 @@ function App() {
     if (file) {reader.readAsText(file);}
   }
 
-  const submit = async function () {
+  const cryptoSubmit = async function () {
     if (validateInput(input)) {
       let result
       if (algorithm === 'caesarCipher') {
@@ -218,12 +204,39 @@ function App() {
     }
   }
 
+  const generateHashArray = function () {
+    const tempArray = []
+    for (let i = 0; i <= 255; i++) {
+      tempArray.push(i)
+    }
+
+    // Shuffle inspiration found here:
+    // https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+    let currentIndex = tempArray.length
+    let randomIndex
+  
+    // While there remain elements to shuffle...
+    while (currentIndex !== 0) {
+      // Pick a remaining element...
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex--;
+  
+      // And swap it with the current element.
+      [tempArray[currentIndex], tempArray[randomIndex]] = [tempArray[randomIndex], tempArray[currentIndex]];
+    }
+
+    return tempArray
+  }
+
   useEffect(() => {
     if (!input) {
       setDownloadLink(false)
     }
+    if (!unsignedHashArray) {
+      setUnsignedHashArray(generateHashArray())
+    }
     // setKey(input)
-  }, [input])
+  }, [input, unsignedHashArray])
 
   return (
     <div className="App">
@@ -235,8 +248,29 @@ function App() {
           <Chip label="HASHING" />
         </Divider>
         <div className="inputField">
-          <TextField multiline onChange={(event) => handleHashInput(event.target.value)} label="Paste text to be hashed" />
+          <TextField multiline onChange={(event) => setHashInput(event.target.value)} label="Paste text to be hashed" />
         </div>
+        {hashInput && (
+          <>
+            <div className="startButton">
+              <Button
+                variant="contained"
+                color="primary"
+                size="large"
+                startIcon={<ArrowForwardIcon />}
+                onClick={() => { hashSubmit(hashInput) }}
+              >
+                Start hashing
+              </Button>
+            </div>
+            {downloadLink && (downloadLink)}
+            {cryptoOutput && (
+              <div className="outputArea">
+                {cryptoOutput}
+              </div>
+            )}
+          </>
+        )}
         <div className="outputArea">{hashOutput}</div>
         <div className="cryptoDivider">
           <Divider>
@@ -291,7 +325,7 @@ function App() {
                 color="primary"
                 size="large"
                 startIcon={<ArrowForwardIcon />}
-                onClick={() => { submit() }}
+                onClick={() => { cryptoSubmit() }}
               >
                 Start {switchLabel}
               </Button>
