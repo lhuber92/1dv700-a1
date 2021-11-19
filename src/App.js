@@ -103,15 +103,6 @@ function App() {
 
   const leoCipherDecryption = function (pairedAlphabet) {
     const cypherFragmentsToProcess = textToProcess.split("z")
-
-    for (let i = 0; i < cypherFragmentsToProcess.length; i++) {
-      if (hasWhiteSpace(cypherFragmentsToProcess[i])) {
-        cypherFragmentsToProcess[i] = cypherFragmentsToProcess[i].trim()
-      }
-    }
-
-    console.log(cypherFragmentsToProcess)
-    console.log(pairedAlphabet)
     let plainText = ""
 
     for (let i = 0; i < cypherFragmentsToProcess.length; i++) {
@@ -120,18 +111,19 @@ function App() {
     console.log(plainText)
   }
 
-  // Inspiration found here:
-  // https://stackoverflow.com/questions/1731190/check-if-a-string-has-white-space
-  const hasWhiteSpace = function (string) {
-    return (/\s/).test(string);
-  }
-
   const leoCipherDecryptCharacter = function (cypherCharacter, pairedAlphabet) {
-    const plainCypherPair = pairedAlphabet.find(element => element.cipherCharacter === `z${cypherCharacter}`)
+    let plainCypherPair = pairedAlphabet.find(element => element.cipherCharacter === `z${cypherCharacter}`)
+
     if (plainCypherPair) {
       return plainCypherPair.plainCharacter
     } else {
-      return cypherCharacter
+      // If the cypherCharacter is ending with a whitespace
+      plainCypherPair = pairedAlphabet.find(element => `${element.cipherCharacter}` === `z${cypherCharacter.trim()}`)
+      if (plainCypherPair) {
+        return plainCypherPair.plainCharacter + ' '
+      } else {
+        return cypherCharacter
+      }
     }
   }
 
