@@ -79,8 +79,7 @@ function App() {
     keyFragments.pop() // Remove last element ("")
     const pairedAlphabet = []
     for (let i = 0; i < keyFragments.length; i++) {
-      console.log(`Pushed ${alphabet[i]} with ${Number(keyFragments[i])}`)
-      pairedAlphabet.push({ plainCharacter: alphabet[i], cipherCharacter: Number(keyFragments[i]) })
+      pairedAlphabet.push({ plainCharacter: alphabet[i], cipherCharacter: `z${keyFragments[i]}` }) // To divide cipher characters when placed in a string
     }
     return pairedAlphabet
   }
@@ -96,7 +95,6 @@ function App() {
   const leoCipherEncryptCharacter = function (plainCharacter, pairedAlphabet) {
     const plainCypherPair = pairedAlphabet.find(element => element.plainCharacter.toUpperCase() === plainCharacter || element.plainCharacter.toLowerCase() === plainCharacter)
     if (plainCypherPair) {
-      console.log(plainCypherPair)
       return plainCypherPair.cipherCharacter
     } else {
       return plainCharacter
@@ -104,16 +102,32 @@ function App() {
   }
 
   const leoCipherDecryption = function (pairedAlphabet) {
+    const cypherFragmentsToProcess = textToProcess.split("z")
+
+    for (let i = 0; i < cypherFragmentsToProcess.length; i++) {
+      if (hasWhiteSpace(cypherFragmentsToProcess[i])) {
+        cypherFragmentsToProcess[i] = cypherFragmentsToProcess[i].trim()
+      }
+    }
+
+    console.log(cypherFragmentsToProcess)
+    console.log(pairedAlphabet)
     let plainText = ""
-    for (let i = 0; i < textToProcess.length; i++) {
-      plainText = plainText + leoCipherDecryptCharacter(textToProcess[i], pairedAlphabet) 
+
+    for (let i = 0; i < cypherFragmentsToProcess.length; i++) {
+      plainText = plainText + leoCipherDecryptCharacter(cypherFragmentsToProcess[i], pairedAlphabet) 
     }
     console.log(plainText)
   }
 
+  // Inspiration found here:
+  // https://stackoverflow.com/questions/1731190/check-if-a-string-has-white-space
+  const hasWhiteSpace = function (string) {
+    return (/\s/).test(string);
+  }
+
   const leoCipherDecryptCharacter = function (cypherCharacter, pairedAlphabet) {
-    console.log(pairedAlphabet)
-    const plainCypherPair = pairedAlphabet.find(element => element.cipherCharacter === Number(cypherCharacter))
+    const plainCypherPair = pairedAlphabet.find(element => element.cipherCharacter === `z${cypherCharacter}`)
     if (plainCypherPair) {
       return plainCypherPair.plainCharacter
     } else {
