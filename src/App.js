@@ -15,6 +15,7 @@ import FormControl from '@mui/material/FormControl';
 
 function App() {
   const [input, setInput] = useState(false)
+  const [key, setKey] = useState("4x18x22x23x15x13x24x10x5x7x21x26x11x1x17x2x3x6x8x9x12x14x16x19x20x25x")
   const [checked, setChecked] = useState(false)
   const [algorithm, setAlgorithm] = React.useState('caesarCipher')
   const [switchLabel, setSwitchLabel] = React.useState('Encryption')
@@ -51,10 +52,13 @@ function App() {
   }
 
   const submit = async function () {
+    console.log(switchLabel)
     if (algorithm === 'caesarCipher') {
-      caesarCipherEncryption()
+      console.log('a')
+      switchLabel === 'Encryption' ? caesarCipherEncryption() : caesarCipherDecryption()
     } else {
-      leoCipherEncryption()
+      console.log('b')
+      switchLabel === 'Encryption' ? leoCipherEncryption() : leoCipherDecryption()
     }
     const data = new Blob([input], { type: 'text/plain' });
     const fileUrl = window.URL.createObjectURL(data);
@@ -72,7 +76,8 @@ function App() {
   }
 
   const leoCipherEncryption = function () {
-    const cipherAlphabet = createCipherAlphabet("4x18x22x23x15x13x24x10x5x7x21x26x11x1x17x2x3x6x8x9x12x14x16x19x20x25x")
+    console.log('leo encrypt')
+    const cipherAlphabet = createCipherAlphabet(key)
     const plainText = "WE ARE DISCOVERED FLEE AT ONCE"
     let cypherText = ""
   
@@ -80,7 +85,7 @@ function App() {
       cypherText = cypherText + encryptCharacter(plainText[i], cipherAlphabet) 
     }
 
-    console.log(cypherText)
+    console.log(cipherAlphabet)
   }
 
   const createCipherAlphabet = function (key) {
@@ -93,42 +98,51 @@ function App() {
 
   const encryptCharacter = function (character, cipherAlphabet) {
     if (character === "a" || character === "A") { return cipherAlphabet[0] }
-    else if (character === "b" || character === "B") { return cipherAlphabet[1] }
-    else if (character === "c" || character === "C") { return cipherAlphabet[2] }
-    else if (character === "d" || character === "D") { return cipherAlphabet[3] }
-    else if (character === "e" || character === "E") { return cipherAlphabet[4] }
-    else if (character === "f" || character === "F") { return cipherAlphabet[5] }
-    else if (character === "g" || character === "G") { return cipherAlphabet[6] }
-    else if (character === "h" || character === "H") { return cipherAlphabet[7] }
-    else if (character === "i" || character === "I") { return cipherAlphabet[8] }
-    else if (character === "j" || character === "J") { return cipherAlphabet[9] }
-    else if (character === "k" || character === "K") { return cipherAlphabet[10] }
-    else if (character === "l" || character === "L") { return cipherAlphabet[11] }
-    else if (character === "m" || character === "M") { return cipherAlphabet[12] }
-    else if (character === "n" || character === "N") { return cipherAlphabet[13] }
-    else if (character === "o" || character === "O") { return cipherAlphabet[14] }
-    else if (character === "p" || character === "P") { return cipherAlphabet[15] }
-    else if (character === "q" || character === "Q") { return cipherAlphabet[16] }
-    else if (character === "r" || character === "R") { return cipherAlphabet[17] }
-    else if (character === "s" || character === "S") { return cipherAlphabet[18] }
-    else if (character === "t" || character === "T") { return cipherAlphabet[19] }
-    else if (character === "u" || character === "u") { return cipherAlphabet[20] }
-    else if (character === "v" || character === "V") { return cipherAlphabet[21] }
-    else if (character === "w" || character === "W") { return cipherAlphabet[22] }
-    else if (character === "x" || character === "X") { return cipherAlphabet[23] }
-    else if (character === "y" || character === "Y") { return cipherAlphabet[24] }
-    else if (character === "z" || character === "Z") { return cipherAlphabet[25] }
+    else if (character === "b" || character === "B") { return { plainCharacter: character, cipherCharacter: cipherAlphabet[1] }}
+    else if (character === "c" || character === "C") { return { plainCharacter: character, cipherCharacter: cipherAlphabet[2] }}
+    else if (character === "d" || character === "D") { return { plainCharacter: character, cipherCharacter: cipherAlphabet[3] }}
+    else if (character === "e" || character === "E") { return { plainCharacter: character, cipherCharacter: cipherAlphabet[4] }}
+    else if (character === "f" || character === "F") { return { plainCharacter: character, cipherCharacter: cipherAlphabet[5] }}
+    else if (character === "g" || character === "G") { return { plainCharacter: character, cipherCharacter: cipherAlphabet[6] }}
+    else if (character === "h" || character === "H") { return { plainCharacter: character, cipherCharacter: cipherAlphabet[7] }}
+    else if (character === "i" || character === "I") { return { plainCharacter: character, cipherCharacter: cipherAlphabet[8] }}
+    else if (character === "j" || character === "J") { return { plainCharacter: character, cipherCharacter: cipherAlphabet[9] }}
+    else if (character === "k" || character === "K") { return { plainCharacter: character, cipherCharacter: cipherAlphabet[10] }}
+    else if (character === "l" || character === "L") { return { plainCharacter: character, cipherCharacter: cipherAlphabet[11] }}
+    else if (character === "m" || character === "M") { return { plainCharacter: character, cipherCharacter: cipherAlphabet[12] }}
+    else if (character === "n" || character === "N") { return { plainCharacter: character, cipherCharacter: cipherAlphabet[13] }}
+    else if (character === "o" || character === "O") { return { plainCharacter: character, cipherCharacter: cipherAlphabet[14] }}
+    else if (character === "p" || character === "P") { return { plainCharacter: character, cipherCharacter: cipherAlphabet[15] }}
+    else if (character === "q" || character === "Q") { return { plainCharacter: character, cipherCharacter: cipherAlphabet[16] }}
+    else if (character === "r" || character === "R") { return { plainCharacter: character, cipherCharacter: cipherAlphabet[17] }}
+    else if (character === "s" || character === "S") { return { plainCharacter: character, cipherCharacter: cipherAlphabet[18] }}
+    else if (character === "t" || character === "T") { return { plainCharacter: character, cipherCharacter: cipherAlphabet[19] }}
+    else if (character === "u" || character === "u") { return { plainCharacter: character, cipherCharacter: cipherAlphabet[20] }}
+    else if (character === "v" || character === "V") { return { plainCharacter: character, cipherCharacter: cipherAlphabet[21] }}
+    else if (character === "w" || character === "W") { return { plainCharacter: character, cipherCharacter: cipherAlphabet[22] }}
+    else if (character === "x" || character === "X") { return { plainCharacter: character, cipherCharacter: cipherAlphabet[23] }}
+    else if (character === "y" || character === "Y") { return { plainCharacter: character, cipherCharacter: cipherAlphabet[24] }}
+    else if (character === "z" || character === "Z") { return { plainCharacter: character, cipherCharacter: cipherAlphabet[25] }}
     else { return character}
   }
 
+  const leoCipherDecryption = function () {
+    console.log('leo decrypt')
+  }
+
   const caesarCipherEncryption = function () {
-    console.log('caesar')
+    console.log('caesar encrypt')
+  }
+
+  const caesarCipherDecryption = function () {
+    console.log('caesar decrypt')
   }
 
   useEffect(() => {
     if (!input) {
       setDownloadLink(false)
     }
+    // setKey(input)
   }, [input])
 
   return (
