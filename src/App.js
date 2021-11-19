@@ -21,6 +21,7 @@ function App() {
   const [switchLabel, setSwitchLabel] = React.useState('Encryption')
   const [downloadLink, setDownloadLink] = React.useState(false)
   const [textToProcess, setTextToProcess] = React.useState(false)
+  const alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
 
   const handleInput = function (inputString) {
     setInput(inputString)
@@ -52,13 +53,11 @@ function App() {
   }
 
   const submit = async function () {
-    console.log(switchLabel)
     if (algorithm === 'caesarCipher') {
-      console.log('a')
       switchLabel === 'Encryption' ? caesarCipherEncryption() : caesarCipherDecryption()
     } else {
-      console.log('b')
-      switchLabel === 'Encryption' ? leoCipherEncryption() : leoCipherDecryption()
+      const pairedAlphabet = createCipherAlphabet(key)
+      switchLabel === 'Encryption' ? leoCipherEncryption(pairedAlphabet) : leoCipherDecryption(pairedAlphabet)
     }
     const data = new Blob([input], { type: 'text/plain' });
     const fileUrl = window.URL.createObjectURL(data);
@@ -75,67 +74,42 @@ function App() {
     )
   }
 
-  const leoCipherEncryption = function () {
-    console.log('leo encrypt')
-    const cipherAlphabet = createCipherAlphabet(key)
-    const plainText = "WE ARE DISCOVERED FLEE AT ONCE"
+  const leoCipherEncryption = function (pairedAlphabet) {
     let cypherText = ""
-  
-    for (let i = 0; i < plainText.length; i++) {
-      cypherText = cypherText + encryptCharacter(plainText[i], cipherAlphabet) 
+    for (let i = 0; i < textToProcess.length; i++) {
+      cypherText = cypherText + encryptCharacter(textToProcess[i], pairedAlphabet) 
     }
-
-    console.log(cipherAlphabet)
+    console.log(cypherText)
   }
 
   const createCipherAlphabet = function (key) {
-    const cipherAlphabet = key.split("x")
-    for (let i = 0; i < cipherAlphabet.length; i++) {
-      cipherAlphabet[i] = Number(cipherAlphabet[i])
+    const keyFragments = key.split("x")
+    keyFragments.pop() // Remove last element ("")
+    const pairedAlphabet = []
+    console.log(keyFragments)
+    console.log(alphabet)
+    for (let i = 0; i < keyFragments.length; i++) {
+      pairedAlphabet.push({ plaintextCharacter: alphabet[i], cipherCharacter: Number(keyFragments[i]) })
     }
-    return cipherAlphabet
+    return pairedAlphabet
   }
 
-  const encryptCharacter = function (character, cipherAlphabet) {
-    if (character === "a" || character === "A") { return cipherAlphabet[0] }
-    else if (character === "b" || character === "B") { return { plainCharacter: character, cipherCharacter: cipherAlphabet[1] }}
-    else if (character === "c" || character === "C") { return { plainCharacter: character, cipherCharacter: cipherAlphabet[2] }}
-    else if (character === "d" || character === "D") { return { plainCharacter: character, cipherCharacter: cipherAlphabet[3] }}
-    else if (character === "e" || character === "E") { return { plainCharacter: character, cipherCharacter: cipherAlphabet[4] }}
-    else if (character === "f" || character === "F") { return { plainCharacter: character, cipherCharacter: cipherAlphabet[5] }}
-    else if (character === "g" || character === "G") { return { plainCharacter: character, cipherCharacter: cipherAlphabet[6] }}
-    else if (character === "h" || character === "H") { return { plainCharacter: character, cipherCharacter: cipherAlphabet[7] }}
-    else if (character === "i" || character === "I") { return { plainCharacter: character, cipherCharacter: cipherAlphabet[8] }}
-    else if (character === "j" || character === "J") { return { plainCharacter: character, cipherCharacter: cipherAlphabet[9] }}
-    else if (character === "k" || character === "K") { return { plainCharacter: character, cipherCharacter: cipherAlphabet[10] }}
-    else if (character === "l" || character === "L") { return { plainCharacter: character, cipherCharacter: cipherAlphabet[11] }}
-    else if (character === "m" || character === "M") { return { plainCharacter: character, cipherCharacter: cipherAlphabet[12] }}
-    else if (character === "n" || character === "N") { return { plainCharacter: character, cipherCharacter: cipherAlphabet[13] }}
-    else if (character === "o" || character === "O") { return { plainCharacter: character, cipherCharacter: cipherAlphabet[14] }}
-    else if (character === "p" || character === "P") { return { plainCharacter: character, cipherCharacter: cipherAlphabet[15] }}
-    else if (character === "q" || character === "Q") { return { plainCharacter: character, cipherCharacter: cipherAlphabet[16] }}
-    else if (character === "r" || character === "R") { return { plainCharacter: character, cipherCharacter: cipherAlphabet[17] }}
-    else if (character === "s" || character === "S") { return { plainCharacter: character, cipherCharacter: cipherAlphabet[18] }}
-    else if (character === "t" || character === "T") { return { plainCharacter: character, cipherCharacter: cipherAlphabet[19] }}
-    else if (character === "u" || character === "u") { return { plainCharacter: character, cipherCharacter: cipherAlphabet[20] }}
-    else if (character === "v" || character === "V") { return { plainCharacter: character, cipherCharacter: cipherAlphabet[21] }}
-    else if (character === "w" || character === "W") { return { plainCharacter: character, cipherCharacter: cipherAlphabet[22] }}
-    else if (character === "x" || character === "X") { return { plainCharacter: character, cipherCharacter: cipherAlphabet[23] }}
-    else if (character === "y" || character === "Y") { return { plainCharacter: character, cipherCharacter: cipherAlphabet[24] }}
-    else if (character === "z" || character === "Z") { return { plainCharacter: character, cipherCharacter: cipherAlphabet[25] }}
-    else { return character}
+  const encryptCharacter = function (character, pairedAlphabet) {
+    const pairedPlaintextCipher = pairedAlphabet.find(element => element.plaintextCharacter.toUpperCase() === character || element.plaintextCharacter.toLowerCase() === character)
+    if (pairedPlaintextCipher) {
+      return pairedPlaintextCipher.cipherCharacter
+    } else {
+      return character
+    }
   }
 
   const leoCipherDecryption = function () {
-    console.log('leo decrypt')
   }
 
   const caesarCipherEncryption = function () {
-    console.log('caesar encrypt')
   }
 
   const caesarCipherDecryption = function () {
-    console.log('caesar decrypt')
   }
 
   useEffect(() => {
