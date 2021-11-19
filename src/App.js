@@ -22,13 +22,16 @@ function App() {
   const [switchLabel, setSwitchLabel] = React.useState('Encryption')
   const [downloadLink, setDownloadLink] = React.useState(false)
   const [textToProcess, setTextToProcess] = React.useState(false)
+  const [output, setOutput] = React.useState(false)
   const alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
 
   const handleInput = function (inputString) {
+    setDownloadLink(false)
     setInput(inputString)
   }
 
   const handleSwitchChange = function (event) {
+    setDownloadLink(false)
     setChecked(event.target.checked)
     if (event.target.checked) {
       setSwitchLabel('Decryption')
@@ -45,6 +48,7 @@ function App() {
   // Inspiration for file-reading found here:
   // https://stackoverflow.com/questions/14446447/how-to-read-a-local-text-file
   const handleFileChange = function (file) {
+    setDownloadLink(false)
     const reader = new FileReader();
     reader.onload = function(){
       const text = reader.result;
@@ -54,14 +58,15 @@ function App() {
   }
 
   const submit = async function () {
+    let result
     if (algorithm === 'caesarCipher') {
       const pairedAlphabet = createCaesarCipherAlphabet(key)
-      switchLabel === 'Encryption' ? caesarCipherEncryption(pairedAlphabet) : caesarCipherDecryption(pairedAlphabet)
+      switchLabel === 'Encryption' ? result = encryptText(pairedAlphabet) : result = caesarCipherDecryption(pairedAlphabet)
     } else {
       const pairedAlphabet = createLeoCipherAlphabet(key)
-      switchLabel === 'Encryption' ? leoCipherEncryption(pairedAlphabet) : leoCipherDecryption(pairedAlphabet)
+      switchLabel === 'Encryption' ? result = encryptText(pairedAlphabet) : result = leoCipherDecryption(pairedAlphabet)
     }
-    const data = new Blob([input], { type: 'text/plain' });
+    const data = new Blob([result], { type: 'text/plain' });
     const fileUrl = window.URL.createObjectURL(data);
     setDownloadLink(
         <a className="downloadLink" download href={fileUrl}>
@@ -74,6 +79,15 @@ function App() {
           >Download file</Button>
         </a>
     )
+    setOutput(result)
+  }
+
+  const encryptText = function (pairedAlphabet) {
+    let cypherText = ""
+    for (let i = 0; i < textToProcess.length; i++) {
+      cypherText = cypherText + encryptCharacter(textToProcess[i], pairedAlphabet) 
+    }
+    return cypherText
   }
 
   const encryptCharacter = function (plainCharacter, pairedAlphabet) {
@@ -106,22 +120,6 @@ function App() {
     return pairedAlphabet
   }
 
-  const leoCipherEncryption = function (pairedAlphabet) {
-    let cypherText = ""
-    for (let i = 0; i < textToProcess.length; i++) {
-      cypherText = cypherText + leoCipherEncryptCharacter(textToProcess[i], pairedAlphabet) 
-    }
-  }
-
-  const leoCipherEncryptCharacter = function (plainCharacter, pairedAlphabet) {
-    const plainCypherPair = pairedAlphabet.find(element => element.plainCharacter.toUpperCase() === plainCharacter || element.plainCharacter.toLowerCase() === plainCharacter)
-    if (plainCypherPair) {
-      return plainCypherPair.cipherCharacter
-    } else {
-      return plainCharacter
-    }
-  }
-
   const leoCipherDecryption = function (pairedAlphabet) {
     const cypherFragmentsToProcess = textToProcess.split("z")
     let plainText = ""
@@ -129,6 +127,7 @@ function App() {
     for (let i = 0; i < cypherFragmentsToProcess.length; i++) {
       plainText = plainText + leoCipherDecryptCharacter(cypherFragmentsToProcess[i], pairedAlphabet) 
     }
+    return plainText
   }
 
   const leoCipherDecryptCharacter = function (cypherCharacter, pairedAlphabet) {
@@ -147,16 +146,25 @@ function App() {
     }
   }
 
-  const caesarCipherEncryption = function (pairedAlphabet) {
-    console.log(pairedAlphabet)
-    let cypherText = ""
-    for (let i = 0; i < textToProcess.length; i++) {
-      cypherText = cypherText + encryptCharacter(textToProcess[i], pairedAlphabet) 
+  const caesarCipherDecryption = function (pairedAlphabet) {
+    const cypherFragmentsToProcess = textToProcess.split('')
+    console.log(cypherFragmentsToProcess)
+    let plainText = ""
+
+    for (let i = 0; i < cypherFragmentsToProcess.length; i++) {
+      plainText = plainText + caesarCipherDecryptCharacter(cypherFragmentsToProcess[i], pairedAlphabet) 
     }
-    console.log(cypherText)
+    return plainText
   }
 
-  const caesarCipherDecryption = function () {
+  const caesarCipherDecryptCharacter = function (cypherCharacter, pairedAlphabet) {
+    let plainCypherPair = pairedAlphabet.find(element => element.cipherCharacter === cypherCharacter)
+
+    if (plainCypherPair) {
+      return plainCypherPair.plainCharacter
+    } else {
+      return cypherCharacter
+    }
   }
 
   useEffect(() => {
@@ -191,11 +199,11 @@ function App() {
               </Select>
             </FormControl>
             <div className="inputField">
-            <input 
-              type="file" 
-              onChange={(event) => handleFileChange(event.target.files[0])}
-              accept=".txt"
-            />
+              <input 
+                type="file" 
+                onChange={(event) => handleFileChange(event.target.files[0])}
+                accept=".txt"
+              />
             </div>
           </div>
         </form>
@@ -226,9 +234,13 @@ function App() {
               </Button>
             </div>
             {downloadLink && (downloadLink)}
+            {output && (
+              <div className="outputArea">
+                {output}
+              </div>
+            )}
           </>
         )}
-        
       </main>
     </div>
   );
