@@ -55,9 +55,27 @@ header {
 
 .startButton, .outputArea, .inputField {
   margin-top: 20px;
+  width: 300px;
+}
+
+.startButton {
+  text-align: center;
+}
+
+.fileInputField {
+  margin-top: 0px;
+  text-align: left;
 }
 
 .outputArea {
   font-size: 17px;
   text-align: center;
+}
+
+.cryptoDivider {
+  margin-top: 50px;
+}
+
+.textarea {
+  width: 100px;
 }

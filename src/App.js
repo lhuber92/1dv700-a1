@@ -12,6 +12,8 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
+import Divider from '@mui/material/Divider';
+import Chip from '@mui/material/Chip';
 
 function App() {
   const [input, setInput] = useState(false)
@@ -22,10 +24,11 @@ function App() {
   const [switchLabel, setSwitchLabel] = React.useState('Encryption')
   const [downloadLink, setDownloadLink] = React.useState(false)
   const [textToProcess, setTextToProcess] = React.useState(false)
-  const [output, setOutput] = React.useState(false)
+  const [cryptoOutput, setCryptoOutput] = React.useState(false)
+  const [hashOutput, setHashOutput] = React.useState(false)
   const alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
 
-  const handleInput = function (inputString) {
+  const handleCryptoInput = function (inputString) {
     setDownloadLink(false)
     setInput(inputString)
   }
@@ -79,7 +82,7 @@ function App() {
           >Download file</Button>
         </a>
     )
-    setOutput(result)
+    setCryptoOutput(result)
   }
 
   const encryptText = function (pairedAlphabet) {
@@ -180,9 +183,21 @@ function App() {
         <header>
           cryptoFriend
         </header>
+        <Divider>
+          <Chip label="HASHING" />
+        </Divider>
+        <div className="inputField">
+          <TextField multiline onChange={(event) => handleCryptoInput(event.target.value)} label="Paste text to be hashed" />
+        </div>
+        <div className="outputArea">{hashOutput}</div>
+        <div className="cryptoDivider">
+          <Divider>
+            <Chip label="ENCRYPTION / DECRYPTION" />
+          </Divider>
+        </div>
         <form noValidate autoComplete="off">
           <div className="inputField">
-            <TextField multiline onChange={(event) => handleInput(event.target.value)} label="Paste your secret key" />
+            <TextField multiline onChange={(event) => handleCryptoInput(event.target.value)} label="Paste your secret key" />
           </div>
           <div className="inputField">
             <FormControl fullWidth>
@@ -198,7 +213,7 @@ function App() {
                 <MenuItem value={'leoCipher'}>Leo Cipher (transportation)</MenuItem>
               </Select>
             </FormControl>
-            <div className="inputField">
+            <div className="inputField fileInputField">
               <input 
                 type="file" 
                 onChange={(event) => handleFileChange(event.target.files[0])}
@@ -234,9 +249,9 @@ function App() {
               </Button>
             </div>
             {downloadLink && (downloadLink)}
-            {output && (
+            {cryptoOutput && (
               <div className="outputArea">
-                {output}
+                {cryptoOutput}
               </div>
             )}
           </>
