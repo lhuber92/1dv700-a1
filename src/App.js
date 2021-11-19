@@ -36,10 +36,14 @@ function App() {
     setHashOutput(generateHash(hashInput))
   }
 
+  // Inspiration found here:
+  // https://en.wikipedia.org/wiki/Pearson_hashing
   const generateHash = function (message) {
-    return message.split('').reduce((hash, c) => {
-      return unsignedHashArray[(hash + c.charCodeAt(0)) % (unsignedHashArray.length - 1)]
-    }, message.length % (unsignedHashArray.length - 1))
+    let hash = 0
+    for (let i = 0; i < message.length; i++) {
+      hash = unsignedHashArray[hash ^ message.charCodeAt(i)]
+    }
+    return hash
   }
 
   const handleCryptoInput = function (inputString) {
