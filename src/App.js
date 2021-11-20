@@ -36,6 +36,30 @@ function App() {
     setHashOutput(generateHash(hashInput))
   }
 
+  const hashTestSubmit = async function () {
+    // 2 Similar strings (only 00110000 / 00110001 differ)
+    const string1 = "leo0" // 01101100 01100101 01101111 00110000 
+    const string2 = "leo1" // 01101100 01100101 01101111 00110001 
+
+    const string1Results = []
+    const string2Results = []
+    let collisions = 0
+    for (let i = 0; i < 1000; i++) {
+      const string1Hash = generateHash(string1)
+      const string2Hash = generateHash(string2)
+      string1Results.push(string1Hash) 
+      string2Results.push(string2Hash)
+      if (string1Hash === string2Hash) {
+        collisions++
+      }
+    }
+
+    console.log(unsignedHashArray)
+    console.log(string1Results)
+    console.log(string2Results)
+    console.log(collisions)
+  }
+
   // Inspiration found here:
   // https://en.wikipedia.org/wiki/Pearson_hashing
   const generateHash = function (message) {
@@ -254,6 +278,17 @@ function App() {
         <div className="inputField">
           <TextField multiline onChange={(event) => setHashInput(event.target.value)} label="Paste text to be hashed" />
         </div>
+        <div className="startButton">
+              <Button
+                variant="contained"
+                color="primary"
+                size="large"
+                startIcon={<ArrowForwardIcon />}
+                onClick={() => { hashTestSubmit(hashInput) }}
+              >
+                Test hashing (1000 times)
+              </Button>
+            </div>
         {hashInput && (
           <>
             <div className="startButton">
