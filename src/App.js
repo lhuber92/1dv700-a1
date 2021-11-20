@@ -25,10 +25,12 @@ function App() {
   const [switchLabel, setSwitchLabel] = React.useState('Encryption')
   const [downloadLink, setDownloadLink] = React.useState(false)
   const [textToProcess, setTextToProcess] = React.useState(false)
+  const [hashStringsToProcess, setHashStringsToProcess] = React.useState(false)
   const [cryptoOutput, setCryptoOutput] = React.useState(false)
   const [hashOutput, setHashOutput] = React.useState(false)
   const alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
   const [unsignedHashArray, setUnsignedHashArray] = React.useState(false)
+  const [hashFileName, setHashFileName] = React.useState(false)
 
   const hashSubmit = async function (hashInput) {
     console.log(hashInput)
@@ -37,33 +39,28 @@ function App() {
   }
 
   const hashTestSubmit = async function () {
-    // 2 Similar strings (only 00110000 / 00110001 differ)
-    const string1 = "leo0" // 01101100 01100101 01101111 00110000 
-    const string2 = "leo1" // 01101100 01100101 01101111 00110001 
-
-    const string1Results = []
-    const string2Results = []
-    let collisions = 0
-    for (let i = 0; i < 1000; i++) {
-      const string1Hash = generateHash(string1)
-      const string2Hash = generateHash(string2)
-      string1Results.push(string1Hash) 
-      string2Results.push(string2Hash)
-      if (string1Hash === string2Hash) {
-        collisions++
+    const hashes = []
+    const collisions = []
+    
+    for (let i = 0; i < hashStringsToProcess.length; i++) {
+      const hash = generateHash(hashStringsToProcess[i])
+      if (hashes.includes(hash)) {
+        collisions.push({hash: hash, string: hashStringsToProcess[i]})
       }
+      hashes.push(hash)
     }
-
-    console.log(unsignedHashArray)
-    console.log(string1Results)
-    console.log(string2Results)
+    console.log('--- Results of ' + hashFileName + '---')
+    console.log('*** Hashes: ***')
+    console.log(hashes)
+    console.log('*** Collisions: ****')
     console.log(collisions)
+    console.log('--------------------------------------')
   }
 
   // Inspiration found here:
   // https://en.wikipedia.org/wiki/Pearson_hashing
   const generateHash = function (message) {
-    let hash = 0
+    let hash = message.length % 256
     for (let i = 0; i < message.length; i++) {
       hash = unsignedHashArray[hash ^ message.charCodeAt(i)]
     }
@@ -118,6 +115,18 @@ function App() {
       setTextToProcess(text);
     };
     if (file) {reader.readAsText(file);}
+  }
+
+  const handleHashFileChange = function (file) {
+    const reader = new FileReader();
+    reader.onload = function(){
+      const text = reader.result;
+      setHashStringsToProcess(text.match(/[^\r\n]+/g))
+    };
+    if (file) {
+      reader.readAsText(file);
+      setHashFileName(file.name)
+    }
   }
 
   const cryptoSubmit = async function () {
@@ -278,17 +287,28 @@ function App() {
         <div className="inputField">
           <TextField multiline onChange={(event) => setHashInput(event.target.value)} label="Paste text to be hashed" />
         </div>
-        <div className="startButton">
-              <Button
-                variant="contained"
-                color="primary"
-                size="large"
-                startIcon={<ArrowForwardIcon />}
-                onClick={() => { hashTestSubmit(hashInput) }}
-              >
-                Test hashing (1000 times)
-              </Button>
-            </div>
+        <div className="inputField fileInputField">
+          <p className="hashFileLabel">Upload a test file below to hash multiple string</p>
+          <input 
+            name="hashFileInput"
+            type="file" 
+            onChange={(event) => handleHashFileChange(event.target.files[0])}
+            accept=".txt"
+          />
+        </div>
+        {hashStringsToProcess && (
+          <div className="startButton">
+            <Button
+              variant="contained"
+              color="primary"
+              size="large"
+              startIcon={<ArrowForwardIcon />}
+              onClick={() => { hashTestSubmit(hashInput) }}
+            >
+              Test hashing
+            </Button>
+          </div>
+        )}
         {hashInput && (
           <>
             <div className="startButton">

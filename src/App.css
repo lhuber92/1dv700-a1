@@ -79,3 +79,9 @@ header {
 .textarea {
   width: 100px;
 }
+
+.hashFileLabel {
+  margin: 0px;
+  margin-top: 20px;
+  font-size: 17px;
+}
