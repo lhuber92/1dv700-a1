@@ -105,7 +105,7 @@ function App() {
     setAlgorithm(event.target.value)
   }
 
-  // Inspiration for file-reading found here:
+  // Inspiration for file-reading found here
   // https://stackoverflow.com/questions/14446447/how-to-read-a-local-text-file
   const handleFileChange = function (file) {
     setDownloadLink(false)
