@@ -86,7 +86,7 @@ function App() {
     return true
   }
   
-  // Inspiration found here
+  // Inspiration found here:
   // https://stackoverflow.com/questions/1303646/check-whether-variable-is-number-or-string-in-javascript
   const isNumber = function (number) { return !isNaN(parseFloat(number)) && !isNaN(number - 0) }
 
