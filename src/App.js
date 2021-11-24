@@ -139,6 +139,7 @@ function App() {
         const pairedAlphabet = createLeoCipherAlphabet(key)
         switchLabel === 'Encryption' ? result = encryptText(pairedAlphabet) : result = leoCipherDecryption(pairedAlphabet)
       }
+      console.log(result)
       const data = new Blob([result], { type: 'text/plain' });
       const fileUrl = window.URL.createObjectURL(data);
       setDownloadLink(
@@ -161,6 +162,9 @@ function App() {
     for (let i = 0; i < textToProcess.length; i++) {
       cypherText = cypherText + encryptCharacter(textToProcess[i], pairedAlphabet) 
     }
+    // Inspiration found here:
+    // https://stackoverflow.com/questions/41638502/javascript-remove-all-characters-from-string-which-are-not-numbers-letters-and
+    cypherText = cypherText.replace(/[^0-9a-z-A-Z ]/g, "").replace(/ +/, " ") // Strip any characters that are not letters, numbers or whitespace to hide formatting.
     return cypherText
   }
 
@@ -215,11 +219,12 @@ function App() {
     if (plainCypherPair) {
       return plainCypherPair.plainCharacter
     } else {
-      // If the cypherCharacter is ending with a whitespace
-      plainCypherPair = pairedAlphabet.find(element => `${element.cipherCharacter}` === `z${cypherCharacter.trim()}`)
+      // If the cypherCharacter is ending with whitespaces or non numeric characters
+      plainCypherPair = pairedAlphabet.find(element => `${element.cipherCharacter}` === `z${cypherCharacter.replace(/\D/g,'')}`)
       if (plainCypherPair) {
         return plainCypherPair.plainCharacter + ' '
       } else {
+        console.log(cypherCharacter)
         return cypherCharacter
       }
     }
