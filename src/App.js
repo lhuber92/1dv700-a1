@@ -14,12 +14,14 @@ import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 import Divider from '@mui/material/Divider';
 import Chip from '@mui/material/Chip';
+import { alpha } from '@mui/system';
 
 function App() {
   const [input, setInput] = useState(false)
   const [hashInput, setHashInput] = useState(false)
-  // const [key, setKey] = useState("4x18x22x23x15x13x24x10x5x7x21x26x11x1x17x2x3x6x8x9x12x14x16x19x20x25x") // W = 16
-  const [key, setKey] = useState(7) // W = 16
+  // const [key, setKey] = useState("4x18x22x23x15x13x24x10x5x7x21x26x11x1x17x2x3x6x8x9x12x14x16x19x20x25x") // leoCipher key
+  // const [key, setKey] = useState(7) // caesarCipher key
+  const [key, setKey] = useState(false)
   const [checked, setChecked] = useState(false)
   const [algorithm, setAlgorithm] = React.useState('caesarCipher')
   const [switchLabel, setSwitchLabel] = React.useState('Encryption')
@@ -33,9 +35,7 @@ function App() {
   const [hashFileName, setHashFileName] = React.useState(false)
 
   const hashSubmit = async function (hashInput) {
-    console.log(hashInput)
-    console.log(unsignedHashArray)
-    setHashOutput(generateHash(hashInput))
+    setHashOutput(<p>Hash output: {generateHash(hashInput)}</p>)
   }
 
   const hashTestSubmit = async function () {
@@ -187,10 +187,15 @@ function App() {
     const pairedAlphabet = []
     const doubleAlphabet = alphabet.concat(alphabet).join('')
     const substitutedAlphabet = doubleAlphabet.substring(key, alphabet.length + key)
-
-    for (let i = 0; i < substitutedAlphabet.length; i++) {
-      pairedAlphabet.push({plainCharacter: alphabet[i], cipherCharacter: substitutedAlphabet[i]})
+    
+    let j = 0;
+    for (let i = 0; i < substitutedAlphabet.length;) {
+      if (!alphabet[j]) { j = 0 }
+      pairedAlphabet.push({plainCharacter: alphabet[j], cipherCharacter: substitutedAlphabet[i]})
+      j++
+      i++
     }
+    console.log(pairedAlphabet)
     return pairedAlphabet
   }
 
@@ -222,7 +227,6 @@ function App() {
 
   const caesarCipherDecryption = function (pairedAlphabet) {
     const cypherFragmentsToProcess = textToProcess.split('')
-    console.log(cypherFragmentsToProcess)
     let plainText = ""
 
     for (let i = 0; i < cypherFragmentsToProcess.length; i++) {
@@ -272,7 +276,7 @@ function App() {
     if (!unsignedHashArray) {
       setUnsignedHashArray(generateHashArray())
     }
-    // setKey(input)
+    setKey(input)
   }, [input, unsignedHashArray])
 
   return (
@@ -288,7 +292,7 @@ function App() {
           <TextField multiline onChange={(event) => setHashInput(event.target.value)} label="Paste text to be hashed" />
         </div>
         <div className="inputField fileInputField">
-          <p className="hashFileLabel">Upload a test file below to hash multiple string</p>
+          <p className="hashFileLabel">Upload a test file below to hash multiple strings</p>
           <input 
             name="hashFileInput"
             type="file" 
@@ -338,6 +342,9 @@ function App() {
         </div>
         <form noValidate autoComplete="off">
           <div className="inputField">
+            <p>The keys below can be used to test the application</p>
+            <p className="keyExample">caesarCipher key example: 7</p>
+            <p className="keyExample">leoCipher key example: 4x18x22x23x15x13x24x10x5x7x21x26x11x1x17x2x3x6x8x9x12x14x16x19x20x25x</p>
             <TextField multiline onChange={(event) => handleCryptoInput(event.target.value)} label="Paste your secret key" />
           </div>
           <div className="inputField">
